@@ -12,5 +12,13 @@ class ApiTest(APITestCase):
 
     def test_api(self):
 
-        self.get("/api/feed")
+        self.get("/api/feed/")
         self.response_200()
+        feed_url = 'https://www.nu.nl/rss/Algemeen'
+        data = {
+            'url':feed_url,
+        }
+        self.post("/api/feed/", data=data)
+        self.response_201()
+        print(self.last_response.content)
+        self.assertTrue(Feed.objects.filter(url=feed_url).exists())

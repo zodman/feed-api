@@ -5,4 +5,4 @@ from .serializers import FeedSerializer
 
 class FeedView(viewsets.ModelViewSet):
     queryset = Feed.objects.all()
-    serializers_class = FeedSerializer
+    serializer_class = FeedSerializer
