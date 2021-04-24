@@ -16,6 +16,9 @@ class ReadedEntry(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        unique_together = ('user', 'entry')
+
 
 class Entry(models.Model):
     feed = models.ForeignKey('Feed', on_delete=models.CASCADE)
@@ -30,6 +33,11 @@ class Entry(models.Model):
     def __str__(self):
         return f'Entry {self.id}'
 
+    def mark_readed(self, user):
+        readed_entry, created = ReadedEntry.objects.get_or_create(user=user, entry=self)
+        readed_entry.readed = True
+        readed_entry.save()
+        return readed_entry
 
 class Feed(models.Model):
     url = models.URLField(unique=True)

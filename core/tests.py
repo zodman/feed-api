@@ -1,14 +1,12 @@
 from test_plus.test import APITestCase
 from django_seed import Seed
-from .models import Feed, Entry
+from .models import Feed, Entry, ReadedEntry
 
 
 class ApiTest(APITestCase):
-
     def setUp(self):
         self.seeder = Seed.seeder()
-        self.make_user("u1")
-
+        self.u1 = self.make_user("u1")
 
     def test_api(self):
         with self.subTest("Test creation feed and entry"):
@@ -37,3 +35,9 @@ class ApiTest(APITestCase):
             entry_id = self.last_response.json().get("id")
             self.assertEqual(entry_id, entry.first().id)
             self.get_check_200(f"/api/feed/{id}/entries/{entry_id}/")
+            with self.subTest("Mark Entry readed") and self.login(
+                    username='u1'):
+                url =  f"/api/feed/{id}/entries/{entry_id}/readed/"
+                self.get_check_200(url)
+                entry = ReadedEntry.objects.get(entry=entry_id, user=self.u1)
+                self.assertTrue(entry.readed)
