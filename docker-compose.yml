@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  web:
+    restart: always
+    build: .
+    command: python manage.py runserver 0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    #links:
+      #- redis:redis
+  #redis:
+    #restart: always
+    #image: redis:latest
+    #ports:
+      #- '6379:6379'
+    #volumes:
+      #- redis-data:/data
+

@@ -4,3 +4,4 @@ django-test-plus
 django-seed
 lxml
 requests
+bake-cli

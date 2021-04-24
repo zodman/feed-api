@@ -1,0 +1,5 @@
+docker/bash: @interactive
+    docker-compose run web bash
+
+test:
+    python manage.py test

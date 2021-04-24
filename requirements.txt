@@ -6,10 +6,20 @@
 #
 asgiref==3.3.4
     # via django
+bake-cli==0.12.0
+    # via -r requirements.in
 certifi==2020.12.5
     # via requests
 chardet==4.0.0
     # via requests
+click==7.1.2
+    # via bake-cli
+colorama==0.4.4
+    # via bake-cli
+decorator==4.4.2
+    # via networkx
+delegator.py==0.1.1
+    # via bake-cli
 django-seed==0.2.2
     # via -r requirements.in
 django-test-plus==1.4.0
@@ -27,6 +37,14 @@ idna==2.10
     # via requests
 lxml==4.6.3
     # via -r requirements.in
+networkx==2.5.1
+    # via bake-cli
+pexpect==4.8.0
+    # via delegator.py
+ptyprocess==0.7.0
+    # via pexpect
+pygments==2.8.1
+    # via bake-cli
 python-dateutil==2.8.1
     # via faker
 pytz==2021.1
