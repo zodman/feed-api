@@ -29,7 +29,12 @@ django==3.2
     #   -r requirements.in
     #   django-seed
     #   djangorestframework
+    #   drf-nested-routers
 djangorestframework==3.12.4
+    # via
+    #   -r requirements.in
+    #   drf-nested-routers
+drf-nested-routers==0.93.3
     # via -r requirements.in
 faker==8.1.1
     # via django-seed

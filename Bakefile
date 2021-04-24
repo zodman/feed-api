@@ -3,3 +3,9 @@ docker/bash: @interactive
 
 test:
     python manage.py test
+
+compile:
+    pip install pip-tools
+    pip-compile requirements.in -o requirements.txt
+
+

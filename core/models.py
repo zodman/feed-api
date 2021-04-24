@@ -9,7 +9,7 @@ class Follow(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
-class FollowEntry(models.Model):
+class ReadedEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     entry = models.ForeignKey("Entry", on_delete=models.CASCADE)
     readed = models.BooleanField(default=False)
@@ -32,8 +32,8 @@ class Entry(models.Model):
 
 
 class Feed(models.Model):
-    url = models.URLField()
-    last_fetch = models.DateTimeField(null=True, blank=True)
+    url = models.URLField(unique=True)
+    last_fetch = models.DateTimeField(null=True, blank=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

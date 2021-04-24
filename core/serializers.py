@@ -7,8 +7,10 @@ class EntrySerializer(serializers.ModelSerializer):
         model = Entry
         fields = '__all__'
 
-
 class FeedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
         fields = '__all__'
+        read_only_fields = ("last_fetch",)
+
+
