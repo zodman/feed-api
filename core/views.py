@@ -21,13 +21,15 @@ class EntryView(MixFeed):
     @action(detail=True, methods=["get"])
     def readed(self, request, **kwargs):
         entry = self.get_object()
-        entry.mark_readed(user=request.user)
+        if request.user.is_authenticated:
+            entry.mark_readed(user=request.user)
         return self.retrieve(request)
 
     @action(detail=True, methods=["get"])
     def unreaded(self, request, **kwargs):
         entry = self.get_object()
-        entry.mark_unreaded(user=request.user)
+        if request.user.is_authenticated:
+            entry.mark_unreaded(user=request.user)
         return self.retrieve(request)
 
 
@@ -43,16 +45,19 @@ class FeedView(MixFeed):
 
     @action(detail=True, methods=["get"])
     def unfollow(self, request, *args, **kwargs):
-        self._fetch_follow(follow=False)
+        self._fetch_follow(request, follow=False)
+        return self.retrieve(request)
 
-    @action(detail=True, methods=["get"])
+    @action(detail=True, methods=["get"], name="Follow Feed")
     def follow(self, request, *args, **kargs):
-        self._fetch_follow(follow=True)
+        self._fetch_follow(request, follow=True)
+        return self.retrieve(request)
 
     def _fetch_follow(self, request, follow=True):
         feed = self.get_object()
         if request.user.is_authenticated:
-            user = request.user
-            follow_obj, created = Follow.objects.get_or_create(user, feed=feed)
-            follow_obj.follow = follow
-            follow_obj.save()
+            if follow:
+                feed.follow(user=request.user)
+            else:
+                feed.unfollow(user=request.user)
+

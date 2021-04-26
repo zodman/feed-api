@@ -2,12 +2,13 @@ docker/bash: @interactive
     docker-compose run web bash
 
 test:
-    coverage run manage.py test
+    coverage run manage.py test --failfast --nomigrations --reverse -v 2
     coverage report
     coverage html
 
 compile:
     pip install pip-tools
+    pip install -r requirements.in
     pip-compile requirements.in -o requirements.txt
 
 

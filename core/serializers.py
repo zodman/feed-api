@@ -11,5 +11,5 @@ class EntrySerializer(serializers.ModelSerializer):
 class FeedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
-        fields = "__all__"
+        fields = ("id", "url", "last_fetch")
         read_only_fields = ("last_fetch",)

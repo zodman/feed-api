@@ -26,6 +26,8 @@ django-seed==0.2.2
     # via -r requirements.in
 django-test-plus==1.4.0
     # via -r requirements.in
+django-test-without-migrations==0.6
+    # via -r requirements.in
 django==3.2
     # via
     #   -r requirements.in
