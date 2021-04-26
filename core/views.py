@@ -14,24 +14,20 @@ class MixFeed(
 
 class EntryFilter(filters.FilterSet):
     readed = filters.BooleanFilter(method="filter_readed")
+
     class Meta:
         model = Entry
         fields = ("link", "title", "readed")
 
-
-    def filter_readed(self, queryset, name,value):
-        kwargs = {
-            f'readed__{name}': value
-        }
+    def filter_readed(self, queryset, name, value):
+        kwargs = {f"readed__{name}": value}
         return queryset.filter(**kwargs)
-
-
 
 
 class EntryView(MixFeed):
     queryset = Entry.objects.all()
     serializer_class = EntrySerializer
-    filter_backends = ( filters.DjangoFilterBackend,)
+    filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = EntryFilter
 
     @action(detail=True, methods=["get"])

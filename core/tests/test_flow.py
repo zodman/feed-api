@@ -18,7 +18,8 @@ class FlowTest(APITestCase):
         len_follow = 3
         self.feeds = list(Feed.objects.all().order_by("?"))[0:len_follow]
         for feed in self.feeds:
-            Follow.objects.create(user=self.u1, feed=feed, follow=faker.boolean())
+            Follow.objects.create(user=self.u1, feed=feed,
+                                  follow=faker.boolean())
         entries = list(Entry.objects.all().order_by("?"))[0:5]
         for entry in entries:
             ReadedEntry.objects.create(
@@ -28,18 +29,17 @@ class FlowTest(APITestCase):
         with self.login(username="u1"):
             self.get_check_200("/api/feed/")
             json = self.last_response.json()
-            self.assertTrue(len(json)==len_follow)
+            self.assertTrue(len(json) == len_follow)
             for e in json:
                 id = e.get("id")
-                with self.subTest(f'feed for {id}'):
-                    self.get_check_200(f"/api/feed/{id}/entries/",
-                                       data={'readed':True})
+                with self.subTest(f"feed for {id}"):
+                    self.get_check_200(
+                        f"/api/feed/{id}/entries/", data={"readed": True}
+                    )
                     entries_json = self.last_response.json()
-                    for i in  entries_json:
+                    for i in entries_json:
                         with self.subTest(f"entries for {id}"):
                             self.assertTrue(i.get("readed"), i)
-
-
 
     def test_flow(self):
         with self.login(username="u1"):
@@ -56,7 +56,8 @@ class FlowTest(APITestCase):
                 self.get_check_200(f"/api/feed/{id}/")
             with self.subTest("List feeds belongs to one feed"):
                 seed = Seed.seeder()
-                seed.add_entity(Entry, 10, {"feed": lambda x: Feed.objects.get(id=id)})
+                seed.add_entity(Entry, 10,
+                                {"feed": lambda x: Feed.objects.get(id=id)})
                 seed.execute()
                 self.get("/api/feed/{id}/entries/")
                 self.response_200()
@@ -77,9 +78,8 @@ class FlowTest(APITestCase):
             with self.subTest("follow and unfollow feeds "):
                 self.get_check_200(f"/api/feed/{id}/follow/")
                 feed = Feed.objects.get(id=id)
-                self.assertTrue(
-                    feed.follows.filter(user=self.u1, follow=True).exists()
-                )
+                self.assertTrue((feed.follows
+                                 .filter(user=self.u1, follow=True).exists()))
                 self.get_check_200(f"/api/feed/{id}/unfollow/")
                 feed = Feed.objects.get(id=id)
                 self.assertTrue(

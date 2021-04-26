@@ -4,8 +4,7 @@ from django.contrib.auth.models import User
 
 class Follow(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    feed = models.ForeignKey("Feed", on_delete=models.CASCADE,
-                             related_name='follows')
+    feed = models.ForeignKey("Feed", on_delete=models.CASCADE, related_name="follows")
     follow = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
@@ -16,8 +15,7 @@ class Follow(models.Model):
 
 class ReadedEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    entry = models.ForeignKey("Entry", on_delete=models.CASCADE,
-                              related_name="readed")
+    entry = models.ForeignKey("Entry", on_delete=models.CASCADE, related_name="readed")
     readed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)

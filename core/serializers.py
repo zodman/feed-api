@@ -2,13 +2,12 @@ from rest_framework import serializers
 from .models import Feed, Entry, ReadedEntry
 
 
-
-
 class EntrySerializer(serializers.ModelSerializer):
     readed = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Entry
-        fields = ["title", "link", "description", "pub_date", "readed"] 
+        fields = ["id","title", "link", "description", "pub_date", "readed"]
 
     def get_readed(self, obj):
         request = self.context.get("request")
@@ -19,7 +18,6 @@ class EntrySerializer(serializers.ModelSerializer):
             except ReadedEntry.DoesNotExist:
                 pass
         return False
-
 
 
 class FeedSerializer(serializers.ModelSerializer):
