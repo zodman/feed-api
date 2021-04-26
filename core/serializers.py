@@ -7,7 +7,7 @@ class EntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Entry
-        fields = ["id","title", "link", "description", "pub_date", "readed"]
+        fields = ["id", "title", "link", "description", "pub_date", "readed"]
 
     def get_readed(self, obj):
         request = self.context.get("request")
@@ -24,4 +24,4 @@ class FeedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
         fields = ("id", "url", "last_fetch")
-        read_only_fields = ("last_fetch",)
+        read_only_fields = ("last_fetch", )

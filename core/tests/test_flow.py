@@ -12,6 +12,7 @@ class FlowTest(APITestCase):
 
     def test_filter(self):
         seed = Seed.seeder()
+        seed.orders = []
         seed.add_entity(Feed, 5, {"url": lambda x: seed.faker.unique.url()})
         seed.add_entity(Entry, 10)
         seed.execute()
@@ -26,6 +27,11 @@ class FlowTest(APITestCase):
                 user=self.u1, entry=entry, readed=faker.boolean()
             )
         self.assertTrue(ReadedEntry.objects.filter(readed=True).count() > 0)
+        with self.subTest("check feed without auth"):
+            self.get_check_200("/api/feed/")
+            json_resp = self.last_response.json()
+            self.assertTrue(len(json_resp) == 5, len(json_resp))
+
         with self.login(username="u1"):
             self.get_check_200("/api/feed/")
             json = self.last_response.json()
@@ -64,6 +70,7 @@ class FlowTest(APITestCase):
                 entry = Entry.objects.filter(feed=id)
                 self.assertTrue(entry.exists())
                 entry_id = self.last_response.json()[0].get("id")
+                self.assertTrue(entry_id)
                 self.assertEqual(entry_id, entry.first().id)
                 self.get_check_200(f"/api/feed/{id}/entries/{entry_id}/")
             with self.subTest("Mark Entry readed"):

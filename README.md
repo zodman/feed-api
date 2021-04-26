@@ -5,7 +5,7 @@ Functional Requeriments:
 [X] List all feeds registered by them
 [X] List feed items belonging to one feed
 [X] Mark items as read
-Filter read/unread feed items per feed and globally (e.g. get all unread items
+[X] Filter read/unread feed items per feed and globally (e.g. get all unread items
     from all feeds or one feed in particular). Order the items by the date of the
     last update
 Force a feed update
@@ -19,6 +19,7 @@ Force a feed update
     POST /api/feed/ and create a follow
 * List feed items belongs to one feed
     /api/feed/<id>/entries/
+* Filter with params ?readed=TrueFalse
 * mark feed items readed
     /api/feed/<id>/entries/<id>/readed
 * follow and unfollow feeds
