@@ -7,34 +7,47 @@ import django.utils.timezone
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0002_alter_feed_last_fetch'),
-    ]
+    dependencies = [("core", "0002_alter_feed_last_fetch")]
 
     operations = [
         migrations.AddField(
-            model_name='feed',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=django.utils.timezone.now),
+            model_name="feed",
+            name="created_at",
+            field=models.DateTimeField(
+                auto_now_add=True, default=django.utils.timezone.now
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='feed',
-            name='updated_at',
+            model_name="feed",
+            name="updated_at",
             field=models.DateTimeField(auto_now=True),
         ),
         migrations.CreateModel(
-            name='Entry',
+            name="Entry",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=255)),
-                ('link', models.URLField()),
-                ('description', models.TextField()),
-                ('pub_date', models.DateTimeField()),
-                ('raw', models.TextField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('feed', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.feed')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=255)),
+                ("link", models.URLField()),
+                ("description", models.TextField()),
+                ("pub_date", models.DateTimeField()),
+                ("raw", models.TextField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "feed",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="core.feed"
+                    ),
+                ),
             ],
         ),
     ]

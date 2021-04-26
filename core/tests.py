@@ -22,11 +22,11 @@ class ApiTest(APITestCase):
             with self.subTest(f"test entries {i}"):
                 self.get_check_200(f"/api/feed/{i.get('id')}/entries/")
 
-    def test_Flow(self):
-        with self.login(username='u1'):
+    def test_flow(self):
+        with self.login(username="u1"):
             with self.subTest("Test creation feed and entry"):
-                feed_url = 'https://www.nu.nl/rss/Algemeen'
-                data = {'url': feed_url}
+                feed_url = "https://www.nu.nl/rss/Algemeen"
+                data = {"url": feed_url}
                 # Create a feed
                 self.post("/api/feed/", data=data)
                 self.response_201()
@@ -36,12 +36,12 @@ class ApiTest(APITestCase):
                 self.assertTrue(follow)
                 self.get_check_200(f"/api/feed/{id}/")
                 new_entry_data = {
-                    'raw': '<raw>',
-                    'feed': id,
-                    'title': self.seeder.faker.sentence(),
-                    'link': self.seeder.faker.url(),
-                    'description': self.seeder.faker.paragraph(),
-                    'pub_date': self.seeder.faker.date_time(),
+                    "raw": "<raw>",
+                    "feed": id,
+                    "title": self.seeder.faker.sentence(),
+                    "link": self.seeder.faker.url(),
+                    "description": self.seeder.faker.paragraph(),
+                    "pub_date": self.seeder.faker.date_time(),
                 }
             with self.subTest("List feeds belongs to one feed"):
                 # list feed items belongs to one feed
@@ -58,4 +58,18 @@ class ApiTest(APITestCase):
                 self.get_check_200(url)
                 entry = ReadedEntry.objects.get(entry=entry_id, user=self.u1)
                 self.assertTrue(entry.readed)
+                url = f"/api/feed/{id}/entries/{entry_id}/unreaded/"
+                self.get_check_200(url)
+                entry = ReadedEntry.objects.get(entry=entry_id, user=self.u1)
+                self.assertFalse(entry.readed)
+            with self.subTest(" follow and unfollow feeds "):
+                self.get_check_200("/api/feed/{id}/follow")
+                feed = Feed.objects.get(id=id)
+                self.assertTrue(feed.follow_set.exists())
 
+    def test_filter_feeds(self):
+        self.seeder.add_entity(Feed, 100)
+        self.seeder.add_entity(Entry, 500)
+        self.seeder.add_entity(Follow, 150)
+        self.seeder.add_entity(ReadedEntry, 450)
+        self.seeder.execute()

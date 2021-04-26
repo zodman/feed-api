@@ -8,12 +8,11 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('core', '0005_auto_20210424_0416'),
+        ("core", "0005_auto_20210424_0416"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='readedentry',
-            unique_together={('user', 'entry')},
-        ),
+            name="readedentry", unique_together={("user", "entry")}
+        )
     ]

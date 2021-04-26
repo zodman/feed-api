@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class Follow(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     feed = models.ForeignKey("Feed", on_delete=models.CASCADE)
+    follow = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -17,11 +18,11 @@ class ReadedEntry(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('user', 'entry')
+        unique_together = ("user", "entry")
 
 
 class Entry(models.Model):
-    feed = models.ForeignKey('Feed', on_delete=models.CASCADE)
+    feed = models.ForeignKey("Feed", on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     link = models.URLField()
     description = models.TextField()
@@ -31,14 +32,20 @@ class Entry(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'Entry {self.id}'
+        return f"Entry {self.id}"
 
-    def mark_readed(self, user):
-        readed_entry, created = (ReadedEntry.objects
-                                 .get_or_create(user=user, entry=self))
-        readed_entry.readed = True
+    def _do_readed(self, user, readed=True):
+        readed_entry, created = ReadedEntry.objects.get_or_create(user=user, entry=self)
+        readed_entry = self._get_readed(user)
+        readed_entry.readed = readed
         readed_entry.save()
         return readed_entry
+
+    def mark_unreaded(self, user):
+        self._do_readed(user, readed=False)
+
+    def mark_readed(self, user, readed=True):
+        self._do_readed(user, readed=False)
 
 
 class Feed(models.Model):
@@ -48,4 +55,4 @@ class Feed(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'Feed {self.id}'
+        return f"Feed {self.id}"

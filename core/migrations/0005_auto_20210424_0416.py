@@ -8,22 +8,17 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('core', '0004_follow_followentry'),
+        ("core", "0004_follow_followentry"),
     ]
 
     operations = [
-        migrations.RenameModel(
-            old_name='FollowEntry',
-            new_name='ReadedEntry',
-        ),
+        migrations.RenameModel(old_name="FollowEntry", new_name="ReadedEntry"),
         migrations.AlterField(
-            model_name='feed',
-            name='last_fetch',
+            model_name="feed",
+            name="last_fetch",
             field=models.DateTimeField(blank=True, editable=False, null=True),
         ),
         migrations.AlterField(
-            model_name='feed',
-            name='url',
-            field=models.URLField(unique=True),
+            model_name="feed", name="url", field=models.URLField(unique=True)
         ),
     ]
