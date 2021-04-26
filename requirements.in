@@ -9,3 +9,4 @@ bake-cli
 
 coverage
 django-test-without-migrations 
+django-filter

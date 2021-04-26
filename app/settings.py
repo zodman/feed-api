@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "test_without_migrations",
     "rest_framework",
+    "django_filters",
+    "django_seed",
     "core",
 ]
 

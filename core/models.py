@@ -4,10 +4,11 @@ from django.contrib.auth.models import User
 
 class Follow(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    feed = models.ForeignKey("Feed", on_delete=models.CASCADE)
+    feed = models.ForeignKey("Feed", on_delete=models.CASCADE,
+                             related_name='follows')
     follow = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         unique_together = ("user", "feed")
@@ -15,10 +16,11 @@ class Follow(models.Model):
 
 class ReadedEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    entry = models.ForeignKey("Entry", on_delete=models.CASCADE)
+    entry = models.ForeignKey("Entry", on_delete=models.CASCADE,
+                              related_name="readed")
     readed = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         unique_together = ("user", "entry")

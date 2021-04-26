@@ -1,5 +1,5 @@
 docker/bash: @interactive
-    docker-compose run web bash
+    docker-compose run --service-ports web bash -o vi
 
 test:
     coverage run manage.py test --failfast --nomigrations --reverse -v 2

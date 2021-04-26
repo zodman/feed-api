@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework.decorators import action
+from django_filters import rest_framework as filters
 from .models import Feed, Entry, Follow
 from .serializers import FeedSerializer, EntrySerializer
 
@@ -11,9 +12,27 @@ class MixFeed(
     pass
 
 
+class EntryFilter(filters.FilterSet):
+    readed = filters.BooleanFilter(method="filter_readed")
+    class Meta:
+        model = Entry
+        fields = ("link", "title", "readed")
+
+
+    def filter_readed(self, queryset, name,value):
+        kwargs = {
+            f'readed__{name}': value
+        }
+        return queryset.filter(**kwargs)
+
+
+
+
 class EntryView(MixFeed):
     queryset = Entry.objects.all()
     serializer_class = EntrySerializer
+    filter_backends = ( filters.DjangoFilterBackend,)
+    filterset_class = EntryFilter
 
     @action(detail=True, methods=["get"])
     def readed(self, request, **kwargs):
@@ -33,6 +52,13 @@ class EntryView(MixFeed):
 class FeedView(mixins.CreateModelMixin, MixFeed):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if self.request.user.is_authenticated:
+            user = self.request.user
+            qs = qs.filter(follows__user=user)
+        return qs
 
     def perform_create(self, serializer):
         feed = serializer.save()

@@ -6,8 +6,8 @@ Functional Requeriments:
 [X] List feed items belonging to one feed
 [X] Mark items as read
 Filter read/unread feed items per feed and globally (e.g. get all unread items
-from all feeds or one feed in particular). Order the items by the date of the
-last update
+    from all feeds or one feed in particular). Order the items by the date of the
+    last update
 Force a feed update
 
 

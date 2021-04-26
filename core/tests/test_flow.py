@@ -10,6 +10,37 @@ class FlowTest(APITestCase):
     def setUp(self):
         self.u1 = self.make_user("u1")
 
+    def test_filter(self):
+        seed = Seed.seeder()
+        seed.add_entity(Feed, 5, {"url": lambda x: seed.faker.unique.url()})
+        seed.add_entity(Entry, 10)
+        seed.execute()
+        len_follow = 3
+        self.feeds = list(Feed.objects.all().order_by("?"))[0:len_follow]
+        for feed in self.feeds:
+            Follow.objects.create(user=self.u1, feed=feed, follow=faker.boolean())
+        entries = list(Entry.objects.all().order_by("?"))[0:5]
+        for entry in entries:
+            ReadedEntry.objects.create(
+                user=self.u1, entry=entry, readed=faker.boolean()
+            )
+        self.assertTrue(ReadedEntry.objects.filter(readed=True).count() > 0)
+        with self.login(username="u1"):
+            self.get_check_200("/api/feed/")
+            json = self.last_response.json()
+            self.assertTrue(len(json)==len_follow)
+            for e in json:
+                id = e.get("id")
+                with self.subTest(f'feed for {id}'):
+                    self.get_check_200(f"/api/feed/{id}/entries/",
+                                       data={'readed':True})
+                    entries_json = self.last_response.json()
+                    for i in  entries_json:
+                        with self.subTest(f"entries for {id}"):
+                            self.assertTrue(i.get("readed"), i)
+
+
+
     def test_flow(self):
         with self.login(username="u1"):
             with self.subTest("Test creation feed and entry"):
@@ -47,10 +78,10 @@ class FlowTest(APITestCase):
                 self.get_check_200(f"/api/feed/{id}/follow/")
                 feed = Feed.objects.get(id=id)
                 self.assertTrue(
-                    feed.follow_set.filter(user=self.u1, follow=True).exists()
+                    feed.follows.filter(user=self.u1, follow=True).exists()
                 )
                 self.get_check_200(f"/api/feed/{id}/unfollow/")
                 feed = Feed.objects.get(id=id)
                 self.assertTrue(
-                    feed.follow_set.filter(user=self.u1, follow=False).exists()
+                    feed.follows.filter(user=self.u1, follow=False).exists()
                 )
