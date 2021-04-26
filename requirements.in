@@ -3,9 +3,12 @@ djangorestframework
 drf-nested-routers
 django-test-plus
 django-seed
+dateparser
 lxml
 requests
 bake-cli
+dramatiq[redis, watch]
+apscheduler
 
 coverage
 django-test-without-migrations 

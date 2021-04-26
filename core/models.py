@@ -1,5 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.timezone import now
+import requests
+import lxml.etree
+import dateparser
 
 
 class Follow(models.Model):
@@ -50,6 +54,8 @@ class Entry(models.Model):
         self._do_readed(user, readed=True)
 
 
+
+
 class Feed(models.Model):
     url = models.URLField(unique=True)
     last_fetch = models.DateTimeField(null=True, blank=True, editable=False)
@@ -70,3 +76,22 @@ class Feed(models.Model):
         follow_obj.follow = follow
         follow_obj.save()
         return follow_obj
+
+    def fetch(self):
+        resp = requests.get(self.url)
+        root = lxml.etree.fromstring(resp.content)
+        titles = root.xpath("//title/text()")
+        links = root.xpath("//link/text()")
+        descs = root.xpath("//description/text()")
+        pub_dates = root.xpath("//pubDate/text()")
+        raws = root.xpath("//item")
+        elements = zip(*[titles, links, descs, pub_dates, raws])
+        for title, link, desc, pub_date, raw in elements:
+            raw_ = lxml.etree.tostring(raw).decode("utf-8")
+            date_ = dateparser.parse(pub_date) 
+            Entry.objects.get_or_create(title=title, link=link,
+                                        feed = self,
+                                        pub_date=date_,
+                                        raw=raw_)
+        self.last_fetch = now()
+        self.save()

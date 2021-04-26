@@ -8,3 +8,4 @@ report*
 db.sqlite3
 htmlcov
 .coverage
+data/

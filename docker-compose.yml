@@ -4,19 +4,38 @@ services:
   web:
     restart: always
     build: .
-    command: python manage.py runserver 0:8000
+    command: bash -c "python manage.py migrate --noinput && python manage.py runserver 0:8000"
     ports:
       - "8000:8000"
     volumes:
       - .:/app
-    #links:
-      #- redis:redis
-  #redis:
-    #restart: always
-    #image: redis:latest
-    #ports:
-      #- '6379:6379'
-    #volumes:
-      #- redis-data:/data
+    links:
+      - redis:redis
+  appschedule:
+    build: .
+    command: python run.py
+    volumes:
+     - .:/app
+    depends_on:
+     - redis
+    links:
+      - redis:redis
+  dramatiq:
+    build: .
+    command: dramatiq core.tasks
+    volumes:
+     - .:/app
+    depends_on:
+     - redis
+    links:
+      - redis:redis
+
+  redis:
+    restart: always
+    image: redis:latest
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./data:/data
 
 

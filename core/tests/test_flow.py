@@ -10,6 +10,23 @@ class FlowTest(APITestCase):
     def setUp(self):
         self.u1 = self.make_user("u1")
 
+    def test_feed(self):
+        urls = [
+            "http://www.nu.nl/rss/Algemeen",
+            "https://feeds.feedburner.com/tweakers/mixed"
+        ]
+        for url in urls:
+            with self.subTest(url=url):
+                feed = Feed(url=url)
+                feed.save()
+                feed.fetch()
+        self.get_check_200("/api/feed/")
+        resp = self.last_response.json()
+        self.assertTrue(len(resp) == 2)
+        for r in resp:
+            with self.subTest(f"test entries {r}"):
+                self.get_check_200(f"/api/feed/{r.get('id')}/entries/")
+
     def test_filter(self):
         seed = Seed.seeder()
         seed.orders = []
@@ -19,8 +36,7 @@ class FlowTest(APITestCase):
         len_follow = 3
         self.feeds = list(Feed.objects.all().order_by("?"))[0:len_follow]
         for feed in self.feeds:
-            Follow.objects.create(user=self.u1, feed=feed,
-                                  follow=faker.boolean())
+            Follow.objects.create(user=self.u1, feed=feed, follow=faker.boolean())
         entries = list(Entry.objects.all().order_by("?"))[0:5]
         for entry in entries:
             ReadedEntry.objects.create(
@@ -62,8 +78,7 @@ class FlowTest(APITestCase):
                 self.get_check_200(f"/api/feed/{id}/")
             with self.subTest("List feeds belongs to one feed"):
                 seed = Seed.seeder()
-                seed.add_entity(Entry, 10,
-                                {"feed": lambda x: Feed.objects.get(id=id)})
+                seed.add_entity(Entry, 10, {"feed": lambda x: Feed.objects.get(id=id)})
                 seed.execute()
                 self.get("/api/feed/{id}/entries/")
                 self.response_200()
@@ -85,8 +100,9 @@ class FlowTest(APITestCase):
             with self.subTest("follow and unfollow feeds "):
                 self.get_check_200(f"/api/feed/{id}/follow/")
                 feed = Feed.objects.get(id=id)
-                self.assertTrue((feed.follows
-                                 .filter(user=self.u1, follow=True).exists()))
+                self.assertTrue(
+                    (feed.follows.filter(user=self.u1, follow=True).exists())
+                )
                 self.get_check_200(f"/api/feed/{id}/unfollow/")
                 feed = Feed.objects.get(id=id)
                 self.assertTrue(
