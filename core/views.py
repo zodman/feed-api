@@ -6,10 +6,7 @@ from .serializers import FeedSerializer, EntrySerializer
 
 
 class MixFeed(
-    mixins.CreateModelMixin,
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet,
+    mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
     pass
 
@@ -33,7 +30,7 @@ class EntryView(MixFeed):
         return self.retrieve(request)
 
 
-class FeedView(MixFeed):
+class FeedView(mixins.CreateModelMixin, MixFeed):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
 
@@ -60,4 +57,3 @@ class FeedView(MixFeed):
                 feed.follow(user=request.user)
             else:
                 feed.unfollow(user=request.user)
-

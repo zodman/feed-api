@@ -13,8 +13,6 @@ class Follow(models.Model):
         unique_together = ("user", "feed")
 
 
-
-
 class ReadedEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     entry = models.ForeignKey("Entry", on_delete=models.CASCADE)
@@ -33,10 +31,8 @@ class Entry(models.Model):
     description = models.TextField()
     pub_date = models.DateTimeField()
     raw = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True, editable=False,
-                                      null=True)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False, null=True)
     updated_at = models.DateTimeField(auto_now=True, editable=False, null=True)
-
 
     def __str__(self):
         return f"Entry {self.id}"
@@ -57,11 +53,8 @@ class Entry(models.Model):
 class Feed(models.Model):
     url = models.URLField(unique=True)
     last_fetch = models.DateTimeField(null=True, blank=True, editable=False)
-    created_at = models.DateTimeField(auto_now_add=True, editable=False,
-                                      null=True)
+    created_at = models.DateTimeField(auto_now_add=True, editable=False, null=True)
     updated_at = models.DateTimeField(auto_now=True, editable=False, null=True)
-
-
 
     def __str__(self):
         return f"Feed {self.id}"

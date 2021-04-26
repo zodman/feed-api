@@ -7,7 +7,6 @@ faker = Faker()
 
 
 class FlowTest(APITestCase):
-
     def setUp(self):
         self.u1 = self.make_user("u1")
 
@@ -25,19 +24,14 @@ class FlowTest(APITestCase):
                 self.assertTrue(follow)
                 self.get_check_200(f"/api/feed/{id}/")
             with self.subTest("List feeds belongs to one feed"):
-                new_entry_data = {
-                    "raw": "<raw>",
-                    "feed": id,
-                    "title": faker.sentence(),
-                    "link": faker.url(),
-                    "description": faker.paragraph(),
-                    "pub_date": faker.date_time(),
-                }
-                self.post("/api/feed/{id}/entries/", data=new_entry_data)
-                self.response_201()
+                seed = Seed.seeder()
+                seed.add_entity(Entry, 10, {"feed": lambda x: Feed.objects.get(id=id)})
+                seed.execute()
+                self.get("/api/feed/{id}/entries/")
+                self.response_200()
                 entry = Entry.objects.filter(feed=id)
                 self.assertTrue(entry.exists())
-                entry_id = self.last_response.json().get("id")
+                entry_id = self.last_response.json()[0].get("id")
                 self.assertEqual(entry_id, entry.first().id)
                 self.get_check_200(f"/api/feed/{id}/entries/{entry_id}/")
             with self.subTest("Mark Entry readed"):
@@ -52,4 +46,11 @@ class FlowTest(APITestCase):
             with self.subTest("follow and unfollow feeds "):
                 self.get_check_200(f"/api/feed/{id}/follow/")
                 feed = Feed.objects.get(id=id)
-                self.assertTrue(feed.follow_set.exists())
+                self.assertTrue(
+                    feed.follow_set.filter(user=self.u1, follow=True).exists()
+                )
+                self.get_check_200(f"/api/feed/{id}/unfollow/")
+                feed = Feed.objects.get(id=id)
+                self.assertTrue(
+                    feed.follow_set.filter(user=self.u1, follow=False).exists()
+                )
