@@ -16,6 +16,8 @@ click==7.1.2
     # via bake-cli
 colorama==0.4.4
     # via bake-cli
+coverage==5.5
+    # via -r requirements.in
 decorator==4.4.2
     # via networkx
 delegator.py==0.1.1

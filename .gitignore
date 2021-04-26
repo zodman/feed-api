@@ -6,3 +6,5 @@ __pycache__/
 *.log
 report*
 db.sqlite3
+htmlcov
+.coverage

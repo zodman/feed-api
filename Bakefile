@@ -2,7 +2,9 @@ docker/bash: @interactive
     docker-compose run web bash
 
 test:
-    python manage.py test
+    coverage run manage.py test
+    coverage report
+    coverage html
 
 compile:
     pip install pip-tools

@@ -6,3 +6,5 @@ django-seed
 lxml
 requests
 bake-cli
+
+coverage

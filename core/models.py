@@ -34,10 +34,12 @@ class Entry(models.Model):
         return f'Entry {self.id}'
 
     def mark_readed(self, user):
-        readed_entry, created = ReadedEntry.objects.get_or_create(user=user, entry=self)
+        readed_entry, created = (ReadedEntry.objects
+                                 .get_or_create(user=user, entry=self))
         readed_entry.readed = True
         readed_entry.save()
         return readed_entry
+
 
 class Feed(models.Model):
     url = models.URLField(unique=True)
