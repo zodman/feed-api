@@ -8,7 +8,7 @@ Functional Requeriments:
 [X] Filter read/unread feed items per feed and globally (e.g. get all unread items
     from all feeds or one feed in particular). Order the items by the date of the
     last update
-Force a feed update
+[X] Force a feed update
 
 
 

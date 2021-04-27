@@ -35,7 +35,6 @@ class Entry(models.Model):
     link = models.URLField()
     description = models.TextField()
     pub_date = models.DateTimeField()
-    raw = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True, editable=False, null=True)
     updated_at = models.DateTimeField(auto_now=True, editable=False, null=True)
 
@@ -79,8 +78,10 @@ class Feed(models.Model):
         return follow_obj
 
     def fetch(self, user_id=None):
-        resp = requests.get(self.url)
-        root = lxml.etree.fromstring(resp.content)
+        import urllib.request
+        import urllib.error
+        resp = urllib.request.urlopen(self.url)
+        root = lxml.etree.fromstring(resp.read())
         titles = root.xpath("//title/text()")
         links = root.xpath("//link/text()")
         descs = root.xpath("//description/text()")
@@ -91,10 +92,10 @@ class Feed(models.Model):
             raw_ = lxml.etree.tostring(raw).decode("utf-8")
             date_ = dateparser.parse(pub_date) 
             args = dict(
-                raw=raw_, defaults=dict(
-                title=title, link=link, feed = self, description=desc,
+                title=title, feed=self, defaults=dict(
+                 link=link, description=desc,
                         pub_date=date_,))
-            entry, _ = Entry.objects.get_or_create(**args)
+            entry, _ = Entry.objects.update_or_create(**args)
             if user_id is not None:
                 ReadedEntry.objects.get_or_create(entry=entry, user_id=user_id)
         self.last_fetch = now()
