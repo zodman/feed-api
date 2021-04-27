@@ -4,7 +4,7 @@ services:
   web:
     restart: always
     build: .
-    command: bash -c "python manage.py migrate --noinput && python manage.py runserver 0:8000"
+    command: bash -c "python manage.py migrate --noinput && python populate.py && python manage.py runserver 0:8000"
     ports:
       - "8000:8000"
     volumes:
@@ -29,7 +29,6 @@ services:
      - redis
     links:
       - redis:redis
-
   redis:
     restart: always
     image: redis:latest

@@ -19,7 +19,8 @@ class Follow(models.Model):
 
 class ReadedEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    entry = models.ForeignKey("Entry", on_delete=models.CASCADE, related_name="readed")
+    entry = models.ForeignKey("Entry", on_delete=models.CASCADE,
+                              related_name="entries_readed")
     readed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
@@ -48,10 +49,10 @@ class Entry(models.Model):
         return readed_entry
 
     def mark_unreaded(self, user):
-        self._do_readed(user, readed=False)
+        return self._do_readed(user, readed=False)
 
     def mark_readed(self, user, readed=True):
-        self._do_readed(user, readed=True)
+        return self._do_readed(user, readed=True)
 
 
 
@@ -72,12 +73,12 @@ class Feed(models.Model):
         self._do_follow(user, follow=False)
 
     def _do_follow(self, user, follow=True):
-        follow_obj, created = Follow.objects.get_or_create(user, feed=self)
+        follow_obj, created = Follow.objects.get_or_create(user=user, feed=self)
         follow_obj.follow = follow
         follow_obj.save()
         return follow_obj
 
-    def fetch(self):
+    def fetch(self, user_id=None):
         resp = requests.get(self.url)
         root = lxml.etree.fromstring(resp.content)
         titles = root.xpath("//title/text()")
@@ -89,9 +90,12 @@ class Feed(models.Model):
         for title, link, desc, pub_date, raw in elements:
             raw_ = lxml.etree.tostring(raw).decode("utf-8")
             date_ = dateparser.parse(pub_date) 
-            Entry.objects.get_or_create(title=title, link=link,
-                                        feed = self,
-                                        pub_date=date_,
-                                        raw=raw_)
+            args = dict(
+                raw=raw_, defaults=dict(
+                title=title, link=link, feed = self, description=desc,
+                        pub_date=date_,))
+            entry, _ = Entry.objects.get_or_create(**args)
+            if user_id is not None:
+                ReadedEntry.objects.get_or_create(entry=entry, user_id=user_id)
         self.last_fetch = now()
         self.save()

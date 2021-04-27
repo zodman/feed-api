@@ -1,3 +1,8 @@
+run:
+    python manage.py migrae
+    python manage.py runserver 0:8000
+
+
 docker/bash: @interactive
     docker-compose run --service-ports web bash -o vi
 

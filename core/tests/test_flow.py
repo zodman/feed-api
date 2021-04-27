@@ -51,7 +51,7 @@ class FlowTest(APITestCase):
         with self.login(username="u1"):
             self.get_check_200("/api/feed/")
             json = self.last_response.json()
-            self.assertTrue(len(json) == len_follow)
+            self.assertTrue(len(json) == 5, len(json))
             for e in json:
                 id = e.get("id")
                 with self.subTest(f"feed for {id}"):
@@ -80,7 +80,7 @@ class FlowTest(APITestCase):
                 seed = Seed.seeder()
                 seed.add_entity(Entry, 10, {"feed": lambda x: Feed.objects.get(id=id)})
                 seed.execute()
-                self.get("/api/feed/{id}/entries/")
+                self.get(f"/api/feed/{id}/entries/")
                 self.response_200()
                 entry = Entry.objects.filter(feed=id)
                 self.assertTrue(entry.exists())
