@@ -1,3 +1,8 @@
+"""
+Async task using dramatiq
+
+"""
+
 import os
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings")
@@ -14,12 +19,17 @@ import logging
 log = logging.getLogger(__name__)
 
 if os.environ.get("TEST"):
+    # for run on testing: TEST=1 python manage.py test
     broker = StubBroker()
 else:
     broker = RedisBroker(host="redis")
 
 
 class MiddlewareNotify(dramatiq.Middleware):
+    """
+        Small class for notify to the user about a error
+        requirement of back-off mechanist
+    """
     def after_process_message(self, *args, **kwargs):
         exception = kwargs.get("exception")
         if exception is not None:
@@ -31,6 +41,10 @@ dramatiq.set_broker(broker)
 
 
 def should_retry(retries_so_far, exception):
+    """
+        Retry for two times or stop, after two continues failures ...
+        requirement of back-off mechanist
+    """
     return retries_so_far < 2
 
 

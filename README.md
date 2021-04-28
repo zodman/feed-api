@@ -50,3 +50,4 @@ bake test
 
 [run.py](run.py)  
 [core/tasks.py](core/tasks.py)
+[core/tests/test_tasks.py](core/tests/test_tasks.py)

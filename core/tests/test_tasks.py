@@ -1,3 +1,6 @@
+"""
+    Test case for back-off mechanist requirement
+"""
 from django.test import TransactionTestCase
 from dramatiq import Worker
 from django.contrib.auth.models import User
