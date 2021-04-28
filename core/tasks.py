@@ -16,10 +16,20 @@ if os.environ.get("TEST"):
 else:
     broker = RedisBroker(host='redis')
 
+
+class MiddlewareNotify(dramatiq.Middleware):
+    def after_process_message(self, *args, **kwargs):
+        exception = kwargs.get("exception")
+        if exception is not None:
+            log.info(f":::: notify to user from a error {exception}")
+
+broker.add_middleware(MiddlewareNotify())
 dramatiq.set_broker(broker)
 
 def should_retry(retries_so_far, exception):
     return retries_so_far < 2
+
+
 
 @dramatiq.actor(retry_when=should_retry)
 def fetch_user_feed(id, user_id):
