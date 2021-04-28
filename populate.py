@@ -1,3 +1,8 @@
+"""
+Script for populate the default admin, used on docker-compose.yaml
+
+"""
+
 import os
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings")
