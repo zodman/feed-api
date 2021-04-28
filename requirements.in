@@ -13,3 +13,4 @@ apscheduler
 coverage
 django-test-without-migrations 
 django-filter
+coveralls

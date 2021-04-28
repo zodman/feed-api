@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
+import urllib.request
 import lxml.etree
 import dateparser
 
@@ -42,6 +43,7 @@ class Entry(models.Model):
         return f"Entry {self.id}"
 
     def _do_readed(self, user, readed=True):
+        """ helper method for mark read and unread entry """
         readed_entry, created = ReadedEntry.objects.get_or_create(user=user, entry=self)
         readed_entry.readed = readed
         readed_entry.save()
@@ -70,15 +72,15 @@ class Feed(models.Model):
         self._do_follow(user, follow=False)
 
     def _do_follow(self, user, follow=True):
+        """ helper method for follow and unfollow feed """
         follow_obj, created = Follow.objects.get_or_create(user=user, feed=self)
         follow_obj.follow = follow
         follow_obj.save()
         return follow_obj
 
     def fetch(self, user_id=None):
-        import urllib.request
-        import urllib.error
-
+        """ Method for download or fetch a feed and if you pass user the Reade
+        entries will be created """
         resp = urllib.request.urlopen(self.url)
         root = lxml.etree.fromstring(resp.read())
         titles = root.xpath("//item/title/text()")

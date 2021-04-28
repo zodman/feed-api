@@ -88,7 +88,7 @@ class FlowTest(APITestCase):
                 self.assertTrue(entry_id)
                 self.assertEqual(entry_id, entry.first().id)
                 self.get_check_200(f"/api/feed/{id}/entries/{entry_id}/")
-            with self.subTest("Mark Entry readed"):
+            with self.subTest("Mark Entry readed/unreaded"):
                 url = f"/api/feed/{id}/entries/{entry_id}/readed/"
                 self.get_check_200(url)
                 entry = ReadedEntry.objects.get(entry=entry_id, user=self.u1)

@@ -13,6 +13,7 @@ from .tasks import fetch_feed, fetch_user_feed
 class MixFeed(
     mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
+    """ Empty mixing only for List and retreive """
     pass
 
 
@@ -31,6 +32,9 @@ class EntryFilter(filters.FilterSet):
 
 
 class CompleteEntryView(viewsets.ReadOnlyModelViewSet):
+    """
+        View for view all global entries of feeds
+    """
     queryset = Entry.objects.all()
     serializer_class = EntrySerializer
     filter_backends = (filters.DjangoFilterBackend, rest_filters.OrderingFilter)
@@ -53,9 +57,9 @@ class EntryView(MixFeed):
     ordering_fields = ("pub_date",)
 
     def get_queryset(self):
+        """ filter al entries by the one feed from url """
         qs = super().get_queryset()
-        if "feed_pk" in self.kwargs:
-            qs = qs.filter(feed=self.kwargs["feed_pk"])
+        qs = qs.filter(feed=self.kwargs["feed_pk"])
         return qs
 
     @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated])
@@ -75,11 +79,8 @@ class FeedView(mixins.CreateModelMixin, MixFeed):
     queryset = Feed.objects.all()
     serializer_class = FeedSerializer
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return qs
-
     def perform_create(self, serializer):
+        """ post created action, create a follow for the feed """
         feed = serializer.save()
         if self.request.user.is_authenticated:
             user = self.request.user
@@ -88,6 +89,8 @@ class FeedView(mixins.CreateModelMixin, MixFeed):
 
     @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated])
     def fetch(self, request, *args, **kwargs):
+        """ action for fetch the feed
+        """
         feed = self.get_object()
         user = request.user
         fetch_user_feed.send(id=feed.id, user_id=user.id)
@@ -95,11 +98,13 @@ class FeedView(mixins.CreateModelMixin, MixFeed):
 
     @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated])
     def unfollow(self, request, *args, **kwargs):
+        """ unfollow the feed """
         self._fetch_follow(request, follow=False)
         return self.retrieve(request)
 
     @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated])
     def follow(self, request, *args, **kargs):
+        """ follow the feed """
         self._fetch_follow(request, follow=True)
         return self.retrieve(request)
 

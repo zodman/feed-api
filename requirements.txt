@@ -21,6 +21,10 @@ click==7.1.2
 colorama==0.4.4
     # via bake-cli
 coverage==5.5
+    # via
+    #   -r requirements.in
+    #   coveralls
+coveralls==3.0.1
     # via -r requirements.in
 dateparser==1.0.0
     # via -r requirements.in
@@ -47,6 +51,8 @@ djangorestframework==3.12.4
     # via
     #   -r requirements.in
     #   drf-nested-routers
+docopt==0.6.2
+    # via coveralls
 dramatiq[redis,watch]==1.10.0
     # via -r requirements.in
 drf-nested-routers==0.93.3
@@ -90,7 +96,9 @@ redis==3.5.3
 regex==2021.4.4
     # via dateparser
 requests==2.25.1
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   coveralls
 six==1.15.0
     # via
     #   apscheduler
