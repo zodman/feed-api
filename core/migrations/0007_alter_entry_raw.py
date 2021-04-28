@@ -5,14 +5,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0006_alter_readedentry_entry'),
-    ]
+    dependencies = [("core", "0006_alter_readedentry_entry")]
 
     operations = [
         migrations.AlterField(
-            model_name='entry',
-            name='raw',
-            field=models.TextField(unique=True),
-        ),
+            model_name="entry", name="raw", field=models.TextField(unique=True)
+        )
     ]

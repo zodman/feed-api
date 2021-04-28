@@ -13,7 +13,7 @@ class FlowTest(APITestCase):
     def test_feed(self):
         urls = [
             "http://www.nu.nl/rss/Algemeen",
-            "https://feeds.feedburner.com/tweakers/mixed"
+            "https://feeds.feedburner.com/tweakers/mixed",
         ]
         for url in urls:
             with self.subTest(url=url):

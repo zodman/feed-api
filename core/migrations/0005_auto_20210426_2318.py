@@ -6,19 +6,25 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0004_auto_20210426_1525'),
-    ]
+    dependencies = [("core", "0004_auto_20210426_1525")]
 
     operations = [
         migrations.AlterField(
-            model_name='follow',
-            name='feed',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='follows', to='core.feed'),
+            model_name="follow",
+            name="feed",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="follows",
+                to="core.feed",
+            ),
         ),
         migrations.AlterField(
-            model_name='readedentry',
-            name='entry',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='readed', to='core.entry'),
+            model_name="readedentry",
+            name="entry",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="readed",
+                to="core.entry",
+            ),
         ),
     ]

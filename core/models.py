@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
-import requests
 import lxml.etree
 import dateparser
 
@@ -19,8 +18,9 @@ class Follow(models.Model):
 
 class ReadedEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    entry = models.ForeignKey("Entry", on_delete=models.CASCADE,
-                              related_name="entries_readed")
+    entry = models.ForeignKey(
+        "Entry", on_delete=models.CASCADE, related_name="entries_readed"
+    )
     readed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
@@ -54,8 +54,6 @@ class Entry(models.Model):
         return self._do_readed(user, readed=True)
 
 
-
-
 class Feed(models.Model):
     url = models.URLField(unique=True)
     last_fetch = models.DateTimeField(null=True, blank=True, editable=False)
@@ -80,6 +78,7 @@ class Feed(models.Model):
     def fetch(self, user_id=None):
         import urllib.request
         import urllib.error
+
         resp = urllib.request.urlopen(self.url)
         root = lxml.etree.fromstring(resp.read())
         titles = root.xpath("//item/title/text()")
@@ -89,12 +88,12 @@ class Feed(models.Model):
         raws = root.xpath("//item")
         elements = zip(*[titles, links, descs, pub_dates, raws])
         for title, link, desc, pub_date, raw in elements:
-            raw_ = lxml.etree.tostring(raw).decode("utf-8")
-            date_ = dateparser.parse(pub_date) 
+            date_ = dateparser.parse(pub_date)
             args = dict(
-                title=title, feed=self, defaults=dict(
-                 link=link, description=desc,
-                        pub_date=date_,))
+                title=title,
+                feed=self,
+                defaults=dict(link=link, description=desc, pub_date=date_),
+            )
             entry, _ = Entry.objects.update_or_create(**args)
             if user_id is not None:
                 ReadedEntry.objects.get_or_create(entry=entry, user_id=user_id)

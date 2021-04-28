@@ -6,14 +6,16 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0005_auto_20210426_2318'),
-    ]
+    dependencies = [("core", "0005_auto_20210426_2318")]
 
     operations = [
         migrations.AlterField(
-            model_name='readedentry',
-            name='entry',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='entries_readed', to='core.entry'),
-        ),
+            model_name="readedentry",
+            name="entry",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="entries_readed",
+                to="core.entry",
+            ),
+        )
     ]

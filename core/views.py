@@ -10,7 +10,6 @@ from .serializers import FeedSerializer, EntrySerializer
 from .tasks import fetch_feed, fetch_user_feed
 
 
-
 class MixFeed(
     mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
 ):
@@ -19,8 +18,9 @@ class MixFeed(
 
 class EntryFilter(filters.FilterSet):
     CHOICES = ((True, "Yes"), (False, "No"))
-    readed = filters.ChoiceFilter(method="filter_readed",label="readed",
-                                  choices=CHOICES)
+    readed = filters.ChoiceFilter(
+        method="filter_readed", label="readed", choices=CHOICES
+    )
 
     class Meta:
         model = Entry
@@ -33,7 +33,7 @@ class EntryFilter(filters.FilterSet):
 class CompleteEntryView(viewsets.ReadOnlyModelViewSet):
     queryset = Entry.objects.all()
     serializer_class = EntrySerializer
-    filter_backends = (filters.DjangoFilterBackend,rest_filters.OrderingFilter)
+    filter_backends = (filters.DjangoFilterBackend, rest_filters.OrderingFilter)
     filterset_class = EntryFilter
     ordering_fields = ("pub_date",)
     permission_classes = [IsAuthenticated]
@@ -45,11 +45,10 @@ class CompleteEntryView(viewsets.ReadOnlyModelViewSet):
         return qs
 
 
-
 class EntryView(MixFeed):
     queryset = Entry.objects.all()
     serializer_class = EntrySerializer
-    filter_backends = (filters.DjangoFilterBackend,rest_filters.OrderingFilter)
+    filter_backends = (filters.DjangoFilterBackend, rest_filters.OrderingFilter)
     filterset_class = EntryFilter
     ordering_fields = ("pub_date",)
 
@@ -88,7 +87,7 @@ class FeedView(mixins.CreateModelMixin, MixFeed):
         fetch_feed.send(id=feed.id)
 
     @action(detail=True, methods=["get"], permission_classes=[IsAuthenticated])
-    def fetch(self, request, *args,**kwargs):
+    def fetch(self, request, *args, **kwargs):
         feed = self.get_object()
         user = request.user
         fetch_user_feed.send(id=feed.id, user_id=user.id)

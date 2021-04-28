@@ -5,13 +5,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0007_alter_entry_raw'),
-    ]
+    dependencies = [("core", "0007_alter_entry_raw")]
 
-    operations = [
-        migrations.RemoveField(
-            model_name='entry',
-            name='raw',
-        ),
-    ]
+    operations = [migrations.RemoveField(model_name="entry", name="raw")]

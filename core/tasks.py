@@ -1,6 +1,8 @@
 import os
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings")
 import django
+
 django.setup()
 from .models import Feed, Follow
 from dramatiq.brokers.redis import RedisBroker
@@ -14,7 +16,7 @@ log = logging.getLogger(__name__)
 if os.environ.get("TEST"):
     broker = StubBroker()
 else:
-    broker = RedisBroker(host='redis')
+    broker = RedisBroker(host="redis")
 
 
 class MiddlewareNotify(dramatiq.Middleware):
@@ -23,12 +25,13 @@ class MiddlewareNotify(dramatiq.Middleware):
         if exception is not None:
             log.info(f":::: notify to user from a error {exception}")
 
+
 broker.add_middleware(MiddlewareNotify())
 dramatiq.set_broker(broker)
 
+
 def should_retry(retries_so_far, exception):
     return retries_so_far < 2
-
 
 
 @dramatiq.actor(retry_when=should_retry)
@@ -43,6 +46,7 @@ def fetch_feed(id):
     feed = Feed.objects.get(id=id)
     log.info("executing fetch")
     feed.fetch()
+
 
 @dramatiq.actor
 def fetch_all_feed():
