@@ -1,5 +1,12 @@
 # Feed Readed api only
 
+[![Django
+CI](https://github.com/zodman/feed-api/actions/workflows/django.yml/badge.svg)](https://github.com/zodman/feed-api/actions/workflows/django.yml)
+
+[![Coverage
+Status](https://coveralls.io/repos/github/zodman/feed-api/badge.svg?branch=main)](https://coveralls.io/github/zodman/feed-api?branch=main)
+
+
 Functional Requeriments:
 - [x] Follow and unfollow multiple feeds  
 - [x] List all feeds registered by them  
@@ -49,5 +56,5 @@ bake test
 ### async requirements implementation on
 
 [run.py](run.py)  
-[core/tasks.py](core/tasks.py)
+[core/tasks.py](core/tasks.py)  
 [core/tests/test_tasks.py](core/tests/test_tasks.py)
