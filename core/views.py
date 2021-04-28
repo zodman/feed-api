@@ -38,6 +38,12 @@ class CompleteEntryView(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ("pub_date",)
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        user = self.request.user
+        qs = qs.filter(feed__follows__user=user)
+        return qs
+
 
 
 class EntryView(MixFeed):

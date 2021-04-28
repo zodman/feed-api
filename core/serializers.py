@@ -1,14 +1,15 @@
 from rest_framework import serializers
+from rest_framework_nested.relations import NestedHyperlinkedRelatedField
 from .models import Feed, Entry, ReadedEntry, Follow
 
 
-class EntrySerializer(serializers.ModelSerializer):
+class EntrySerializer(serializers.HyperlinkedModelSerializer):
     readed = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Entry
         fields = [
-            "id", "feed", "title", "link", "description", "pub_date", "readed"
+            "id", "feed", "title", "link", "description", "pub_date", "readed",
         ]
 
     def get_readed(self, obj):
@@ -22,12 +23,16 @@ class EntrySerializer(serializers.ModelSerializer):
         return None
 
 
-class FeedSerializer(serializers.ModelSerializer):
+class FeedSerializer(serializers.HyperlinkedModelSerializer):
     follow = serializers.SerializerMethodField(read_only=True)
+    entries = serializers.HyperlinkedIdentityField(
+        view_name='feed-entries-list',
+        lookup_url_kwarg='feed_pk',
+    )
 
     class Meta:
         model = Feed
-        fields = ("id", "url", "last_fetch", "follow")
+        fields = ("id", "url", "last_fetch", "follow",'entries')
         read_only_fields = ("last_fetch", "follow", 'id')
 
     def get_follow(self, obj):

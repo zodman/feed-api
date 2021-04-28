@@ -82,10 +82,10 @@ class Feed(models.Model):
         import urllib.error
         resp = urllib.request.urlopen(self.url)
         root = lxml.etree.fromstring(resp.read())
-        titles = root.xpath("//title/text()")
-        links = root.xpath("//link/text()")
-        descs = root.xpath("//description/text()")
-        pub_dates = root.xpath("//pubDate/text()")
+        titles = root.xpath("//item/title/text()")
+        links = root.xpath("//item/link/text()")
+        descs = root.xpath("//item/description/text()")
+        pub_dates = root.xpath("//item/pubDate/text()")
         raws = root.xpath("//item")
         elements = zip(*[titles, links, descs, pub_dates, raws])
         for title, link, desc, pub_date, raw in elements:

@@ -9,6 +9,7 @@ Functional Requeriments:
     from all feeds or one feed in particular). Order the items by the date of the
     last update
 [X] Force a feed update
+[X] async implementation with dramatiq
 
 
 
@@ -19,15 +20,14 @@ Functional Requeriments:
     POST /api/feed/ and create a follow
 * List feed items belongs to one feed
     /api/feed/<id>/entries/
-* Filter with params ?readed=TrueFalse
+* Filter with params ?readed=True|False
 * mark feed items readed
     /api/feed/<id>/entries/<id>/readed
 * follow and unfollow feeds
     /api/feed/<id>/follow
     /api/feed/<id>/unfollow
-
-
-==
 * force feed update
-/api/feed/<id>/fetch POST 
+    /api/feed/<id>/fetch
+* List all feed globally
+    /api/entries/
 

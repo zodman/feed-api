@@ -22,7 +22,7 @@ services:
       - redis:redis
   dramatiq:
     build: .
-    command: dramatiq core.task_broker:broker core.tasks
+    command: dramatiq core.tasks
     volumes:
      - .:/app
     depends_on:
